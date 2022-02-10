@@ -95,7 +95,10 @@ void getMatrixFromCombinaison(int start ,int end , int length , int dimension, H
 
 }
 
+/*** Intput : cut_off value , the COO structure size , the rows array of the COO structure
 
+    Output : Return the size of the new COO structure for the COOToHybrid transformation
+***/
 
 int size_of_new_coo(int * rows, int COO_size , int cut_off){
     int size = 0;
@@ -116,6 +119,12 @@ int size_of_new_coo(int * rows, int COO_size , int cut_off){
     }
     return size;
 }
+
+/*** Input : A COO structure composed of (values , columns , rows and the size of the arrays), the dimension of the original matrix , the value of the cut_off,
+    a pre-composed hybrid structure composed of (Ell : values and columns ; COO :values , columns , rows)
+
+    Output : An Hybrid structure composed of (Ell : values and columns ; COO :values , columns , rows)
+***/
 
 int cooToHyb(int* values,int * columns, int * rows ,int COO_size , int nbCol , int nbRow,int cut_off,int ** ELL_Values, int ** ELL_Indexes,int ** COO_Values, int ** COO_Col , int ** COO_Row){
   int size_of_coo = size_of_new_coo(rows,COO_size,cut_off);
