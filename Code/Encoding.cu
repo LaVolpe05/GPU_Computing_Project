@@ -54,7 +54,10 @@ __global__ void HYB_multiplication_scalar(float * ell_data ,int size_of_ell,floa
 }
 
 
+/*** Input : Two matrices on Hybrid format 
 
+    Output : The first matrix with the addition performed with the second one 
+    ***/
 __global__ void HYB_addition(int * ell_data , int * ell_col_ids,int size_of_ell,int cut_off ,int * coo_data,int * col_ids, int size_of_coo , int *inELL, int * inCOO  ){
     int idx = blockIdx.x * blockDim.x + threadIdx.x;
     int nbRow = size_of_ell/cut_off;
