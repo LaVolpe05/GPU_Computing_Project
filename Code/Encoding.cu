@@ -5,22 +5,22 @@
 
 typedef struct{
     int cut_off;
-    int * ell_data;
+    float * ell_data;
     int * ell_col;
     int ell_size;
-    int * coo_data;
+    float * coo_data;
     int * coo_col;
     int * coo_row;
     int coo_size;
 }Hyb;
 
-__global__ void HYB_multiplication(int * ell_data , int * ell_col_ids,int size_of_ell,int cut_off ,int * coo_data,int * col_ids,int * rows_ids, int size_of_coo , int *inELL, int * inCOO ,int * outEll , int * outCoo ){
+__global__ void HYB_multiplication(float * ell_data , int * ell_col_ids,int size_of_ell,int cut_off ,float * coo_data,int * col_ids,int * rows_ids, int size_of_coo , float *inELL, float * inCOO ,float * outEll , float * outCoo ){
     int idx = blockIdx.x * blockDim.x + threadIdx.x;
     int nbRow = size_of_ell/cut_off;
     //ELL multiplication
     if (idx < nbRow){
         int row = idx ;
-        int dot = 0;
+        float dot = 0;
         for (int element = 0; element < cut_off ; element++){ //elements_in_rows
             int element_offset = row + element * nbRow;
             dot += ell_data[element_offset]* inELL[ell_col_ids[element_offset]];
@@ -31,7 +31,7 @@ __global__ void HYB_multiplication(int * ell_data , int * ell_col_ids,int size_o
     }
     //COO multiplication
     for (int element = idx ; element < size_of_coo; element += blockDim.x * gridDim.x){
-        int dot = coo_data[element] * inCOO[col_ids[element]];
+        float dot = coo_data[element] * inCOO[col_ids[element]];
         atomicAdd(outCoo+ rows_ids[element],dot);
     }
 }
@@ -58,7 +58,7 @@ __global__ void HYB_multiplication_scalar(float * ell_data ,int size_of_ell,floa
 
     Output : The first matrix with the addition performed with the second one 
     ***/
-__global__ void HYB_addition(int * ell_data , int * ell_col_ids,int size_of_ell,int cut_off ,int * coo_data,int * col_ids, int size_of_coo , int *inELL, int * inCOO  ){
+__global__ void HYB_addition(float * ell_data , int * ell_col_ids,int size_of_ell,int cut_off ,float * coo_data,int * col_ids, int size_of_coo , float *inELL, float * inCOO  ){
     int idx = blockIdx.x * blockDim.x + threadIdx.x;
     int nbRow = size_of_ell/cut_off;
     //ELL addition
