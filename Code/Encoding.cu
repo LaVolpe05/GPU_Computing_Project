@@ -88,9 +88,22 @@ __global__ void HYB_addition(float * ell_data , int * ell_col_ids,int size_of_el
     
 }
 
-void getMatrixFromCombinaison(int start ,int end , int length , int dimension, HYB * SupraMatrix, combinaison  ){
+/*** Input : 
 
-    int start = 0;
+    Output : A 2-Dimensional array , each rows is the index of matrices to be multiply 
+***/
+int **getCombinaison(){
+    int **arr=(int **)malloc(sizeof(int *)*5);
+    int i,j;
+    for(i=0;i<5;i++)//checking purpose
+    {
+        arr[i]=(int *)malloc(sizeof(int)*5);
+        for(j=0;j<5;j++)
+        {
+            arr[i][j]=i*10+j;
+        }
+    }
+    /*int start = 0;
     int end = 1;
     int dimension = 3;
     int length = 3;
@@ -101,7 +114,18 @@ void getMatrixFromCombinaison(int start ,int end , int length , int dimension, H
 
         }
 
-    }
+    }*/
+    return arr;
+}
+/*** Input : The multiplex starting and ending , the length of the path , the SupraMatrix dimension (a squared matrix ) ,
+ the combinnaison which conduct the matrix mutlpilication 
+
+
+    Output : Return a matrix on Hybrid format 
+***/
+void getMatrixFromCombinaison(int start ,int end , int length , int dimension, HYB * SupraMatrix, combinaison  ){
+
+    
 
 
 }
