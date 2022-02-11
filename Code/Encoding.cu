@@ -35,7 +35,9 @@ __global__ void HYB_multiplication(float * ell_data , int * ell_col_ids,int size
         atomicAdd(outCoo+ rows_ids[element],dot);
     }
 }
+/*** Input : A matrix on Hybrid format composed of(Ell : values and siz ; COO :values and size ) plus a scalar we multiply it with .
 
+***/
 __global__ void HYB_multiplication_scalar(float * ell_data ,int size_of_ell,float * coo_data, int size_of_coo , float scalar ){
     int idx = blockIdx.x * blockDim.x + threadIdx.x;
     int nbRow = size_of_ell/cut_off;
