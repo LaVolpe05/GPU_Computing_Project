@@ -3,6 +3,8 @@
 #include <cusparse.h>
 #include <math.h>
 
+
+/*** A new type representing an Hybrid matrix***/
 typedef struct{
     int cut_off;
     float * ell_data;
