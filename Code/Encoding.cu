@@ -14,6 +14,13 @@ typedef struct{
     int coo_size;
 }Hyb;
 
+
+/*** Input : Two matrices on Hybrid format 
+
+    Output : Return 2 array ; one is the ELL values of the multiplication and the other one is the COO values of the multiplication 
+***/
+
+
 __global__ void HYB_multiplication(float * ell_data , int * ell_col_ids,int size_of_ell,int cut_off ,float * coo_data,int * col_ids,int * rows_ids, int size_of_coo , float *inELL, float * inCOO ,float * outEll , float * outCoo ){
     int idx = blockIdx.x * blockDim.x + threadIdx.x;
     int nbRow = size_of_ell/cut_off;
@@ -37,6 +44,8 @@ __global__ void HYB_multiplication(float * ell_data , int * ell_col_ids,int size
 }
 /*** Input : A matrix on Hybrid format composed of(Ell : values and siz ; COO :values and size ) plus a scalar we multiply it with .
 
+    Output : Return a matrix in Hybrid format 
+
 ***/
 __global__ void HYB_multiplication_scalar(float * ell_data ,int size_of_ell,float * coo_data, int size_of_coo , float scalar ){
     int idx = blockIdx.x * blockDim.x + threadIdx.x;
@@ -58,7 +67,7 @@ __global__ void HYB_multiplication_scalar(float * ell_data ,int size_of_ell,floa
 
 /*** Input : Two matrices on Hybrid format 
 
-    Output : The first matrix with the addition performed with the second one 
+    Output : Return the first matrix with the addition performed with the second one 
     ***/
 __global__ void HYB_addition(float * ell_data , int * ell_col_ids,int size_of_ell,int cut_off ,float * coo_data,int * col_ids, int size_of_coo , float *inELL, float * inCOO  ){
     int idx = blockIdx.x * blockDim.x + threadIdx.x;
