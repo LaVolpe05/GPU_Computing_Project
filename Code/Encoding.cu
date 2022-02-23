@@ -95,7 +95,7 @@ __global__ void HYB_addition(float * ell_data , int * ell_col_ids,int size_of_el
     Output : A 2-Dimensional array , each rows is the list of index of the matrices to be multiply 
 ***/
 int **getCombinaison(int start ,int end , int length , int dimension){
-        int size = length-1 ;
+    int size = length-1 ;
     //int arr_size = pow(dimension,size);
     char arr[2][3] = {{11, 22, 33},{11, 22, 33}};
     int indices[size];
@@ -111,14 +111,23 @@ int **getCombinaison(int start ,int end , int length , int dimension){
     while (1) {
     
         // print current combination
-        printf("%d ",start);
         for (int i = 0; i < size; i++){
-            printf("%d ",arr[i][indices[i]]);
+            if(i != 0 && i != size-1){
+                printf("%d",arr[i][indices[i]]);
+            }else{
+                if(i == 0){
+                    printf("%d ",arr[i][indices[i]]+(start*100));
+                }
+                if(i == size-1){
+                    printf("%d ",arr[i][indices[i]]*10+(end));
+                }
+            }
+            
             //new_arr[i] = arr[i][indices[i]];
             //printf("%d ",new_arr[i]);
             
         }
-        printf("%d \n",end);
+        printf("\n");
  
         // find the rightmost array that has more
         // elements left after the current element
