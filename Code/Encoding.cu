@@ -95,56 +95,64 @@ __global__ void HYB_addition(float * ell_data , int * ell_col_ids,int size_of_el
     Output : A 2-Dimensional array , each rows is the list of index of the matrices to be multiply 
 ***/
 int **getCombinaison(int start ,int end , int length , int dimension){
-    void getCombinaison(int length , int dimension){
         int size = length-1 ;
-        int arr[2][3] = {{11, 22, 33},{11, 22, 33}};
-        int indices[size];
-        int new_arr[dimension*dimension*size];
-        /*for (int i = 0; i < arr_size/dimension; i++){
-            for (int j = 0; j < arr_size/dimension; j++){
-            arr[i][j] = poss[j];
-        }*/
-        for (int i = 0; i < dimension*dimension*size; i++){
-            new_arr[i] = 0;
-        }
-        //printf("here");
+    //int arr_size = pow(dimension,size);
+    char arr[2][3] = {{11, 22, 33},{11, 22, 33}};
+    int indices[size];
+    int new_arr[dimension*dimension*size];
+    for (int i = 0; i < dimension*dimension*size; i++){
+        new_arr[i] = 0;
+    }
+    //printf("here");
+    for (int i = 0; i < size; i++){
+        indices[i] = 0;
+    }
+    //printf("here");
+    while (1) {
+    
+        // print current combination
+        printf("%d ",start);
         for (int i = 0; i < size; i++){
+            printf("%d ",arr[i][indices[i]]);
+            //new_arr[i] = arr[i][indices[i]];
+            //printf("%d ",new_arr[i]);
+            
+        }
+        printf("%d \n",end);
+ 
+        // find the rightmost array that has more
+        // elements left after the current element
+        // in that array
+        int next = size - 1;
+       // printf("%d , %d , %d \n", next,indices[next],dimension);
+        while (next >= 0 && (indices[next] + 1 >= dimension)){
+            next--;
+        }
+        // no such array is found so no more
+        // combinations left
+        if (next < 0){
+            return;
+        }
+        // if found move to next element in that
+        // array
+        indices[next]++;
+ 
+        // for all arrays to the right of this
+        // array current index again points to
+        // first element
+        for (int i = next + 1; i < size; i++){
             indices[i] = 0;
         }
-        while (1) {
-        
-            // print current combination
-            for (int i = 0; i < size; i++){
-                printf("%d ",arr[i][indices[i]]);
-                //new_arr[i] = arr[i][indices[i]];
-                //printf("%d ",new_arr[i]);
-                
-            }
-            printf("\n");
-
-            int next = size - 1;
-            while (next >= 0 && (indices[next] + 1 >= dimension)){
-                next--;
-            }
-            if (next < 0){
-                return;
-            }
-            indices[next]++;
-     
-            
-            for (int i = next + 1; i < size; i++){
-                indices[i] = 0;
-            }
-        }
-         /*for (int i = 0; i < dimension*dimension; i++){
-            for (int j = 0; j < size; j++){
-            printf("%d ",new_arr[i][indices[i]]);
-        }
-        printf("\n");
-        }*/
-            
-        
     }
+     /*for (int i = 0; i < dimension*dimension; i++){
+        for (int j = 0; j < size; j++){
+        printf("%d ",new_arr[i][indices[i]]);
+    }
+    printf("\n");
+    }*/
+        
+    
+}
     
 
     
