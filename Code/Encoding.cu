@@ -220,6 +220,7 @@ int size_of_new_coo(int * rows, int COO_size , int cut_off){
         if (count > cut_off){
             size++;
         }
+        
     }
     return size;
 }
