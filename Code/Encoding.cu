@@ -301,7 +301,7 @@ int cooToHyb(int* values,int * columns, int * rows ,int COO_size , int nbCol , i
   return index_ELL;
 }
 
-void Katz_Similarity(int theta ,int pathLength,int dimension,int start,int end){
+void Katz_Similarity(int theta ,int pathLength,int dimension,int start,int end, HYB * supraMatrix){
     int * temp_COO_values;
     int * temp_COO_row;
     int * temp_COO_col;
@@ -312,11 +312,11 @@ void Katz_Similarity(int theta ,int pathLength,int dimension,int start,int end){
     int * combination = getCombinaison(start ,end , pathLength ,dimension);
     
     for(int k = 0 ; k < pathLength ; k++){
-        HYB_addition<<<dimGrid,dimBlock>>>(temp_COO_values,temp_COO_row,temp_COO_col,temp_ELL_values,temp_ELL_indexes,(matrixFactorMultiplication(pow(theta,k),getMatrixFromCombinaison(start,end,k,dimension,supraAdjacency,combination))));
+
+        temp = matrixFactorMultiplication(pow(theta,k),getMatrixFromCombinaison(start,end,k,dimension,supraAdjacency,combination));
+
+        HYB_addition<<<dimGrid,dimBlock>>>(temp_COO_values,temp_COO_row,temp_COO_col,temp_ELL_values,temp_ELL_indexes,temp);
     }
-Impl
-
-
 
 }
 
