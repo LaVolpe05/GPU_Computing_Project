@@ -177,18 +177,21 @@ int **getCombinaison(int start ,int end , int length , int dimension){
 
     Output : Return a matrix on Hybrid format 
 ***/
-__global__ void getMatrixFromCombinaison( int pathLength , int dimension, HYB * supraMatrix, int * combinaison  ){
+__global__ Hyb getMatrixFromCombinaison( int pathLength , int dimension, HYB * supraMatrix, int * combinaison  ){
 
     int sizeSupraMatrix = dimension*dimension;
     int sizeCombination = pow(dimension,(pathLength -1));
     int cut_off;
-    float * ell_data;
-    int * ell_col;
-    int ell_size;
-    float * coo_data;
-    int * coo_col;
-    int * coo_row;
-    int coo_size;
+    Hyb newMatrix ;
+    newMatrix.cut_off = supraMatrix[0].cut_off;
+    newMatrix.ell_data = supraMatrix[0].ell_data;
+    newMatrix.ell_col = supraMatrix[0].ell_col;
+    newMatrix.ell_size = supraMatrix[0].ell_size;
+    newMatrix.coo_data = supraMatrix[0].coo_data;
+    newMatrix.coo_col = supraMatrix[0].coo_col;
+    newMatrix.coo_row = supraMatrix[0].coo_row;
+    newMatrix.coo_size = supraMatrix[0].coo_size;
+
     
     for(int i = 0 ; i < sizeCombination ; i +=pathLength){
         
