@@ -173,7 +173,7 @@ int **getCombinaison(int start ,int end , int length , int dimension){
 
     Output : Return a matrix on Hybrid format 
 ***/
-void getMatrixFromCombinaison(int start ,int end , int length , int dimension, HYB * SupraMatrix, combinaison  ){
+__global__ void getMatrixFromCombinaison(int start ,int end , int length , int dimension, HYB * SupraMatrix, int * combinaison  ){
 
     
 
@@ -292,7 +292,7 @@ void Katz_Similarity(int theta ,int pathLength,int start,int end){
 	dim3 dimGrid( 1, 1 );
     
     for(int k = 0 ; k < pathLength ; k++){
-        HYB_addition<<<dimGrid,dimBlock>>>(temp_COO_values,temp_COO_row,temp_COO_col,temp_ELL_values,temp_ELL_indexes,(matrixFactorMultiplication(pow(theta,k),getMatrixFromCombinaison(start,end,k))));
+        HYB_addition<<<dimGrid,dimBlock>>>(temp_COO_values,temp_COO_row,temp_COO_col,temp_ELL_values,temp_ELL_indexes,(matrixFactorMultiplication(pow(theta,k),getMatrixFromCombinaison(start,end,k,dimension,HYB supraAdjacency,combination))));
     }
 Impl
 
