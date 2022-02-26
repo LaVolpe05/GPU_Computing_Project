@@ -23,46 +23,49 @@ typedef struct{
 ***/
 
 
-__global__ void HYB_multiplication(float * ell_data , int * ell_col_ids,int size_of_ell,int cut_off ,float * coo_data,int * col_ids,int * rows_ids, int size_of_coo , float *inELL, float * inCOO ,float * outEll , float * outCoo ){
+__global__ Hyb HYB_multiplication(Hyb inputMatrix, Hyb inMatrix ){
     int idx = blockIdx.x * blockDim.x + threadIdx.x;
-    int nbRow = size_of_ell/cut_off;
+    int nbRow = inputMatrix.ell_size/inputMatrix.cut_off;
     //ELL multiplication
     if (idx < nbRow){
         int row = idx ;
         float dot = 0;
-        for (int element = 0; element < cut_off ; element++){ //elements_in_rows
+        for (int element = 0; element < inputMatrix.cut_off ; element++){ //elements_in_rows
             int element_offset = row + element * nbRow;
-            dot += ell_data[element_offset]* inELL[ell_col_ids[element_offset]];
+            dot += inputMatrix.ell_data[element_offset]* inMatrix.ell_data[inputMatrix.ell_col[element_offset]];
 
         }
-        atomicAdd(outEll + row, dot);
+        atomicAdd(inputMatrix.ell_data + row, dot);
 
     }
     //COO multiplication
     for (int element = idx ; element < size_of_coo; element += blockDim.x * gridDim.x){
-        float dot = coo_data[element] * inCOO[col_ids[element]];
-        atomicAdd(outCoo+ rows_ids[element],dot);
+        float dot = intputMatrix.coo_data[element] * inMatrix.coo_data[inputMatrix.coo_col[element]];
+        atomicAdd(inputMatrix.coo_data+ inputMatrix.coo_row[element],dot);
     }
+    return inputMatrix;
 }
 /*** Input : A matrix on Hybrid format composed of(Ell : values and siz ; COO :values and size ) plus a scalar we multiply it with .
 
     Output : Return a matrix in Hybrid format 
 
 ***/
-__global__ void HYB_multiplication_scalar(float * ell_data ,int size_of_ell,float * coo_data, int size_of_coo , float scalar ){
+__global__ Hyb HYB_multiplication_scalar(Hyb inputMatrix, float scalar ){
     int idx = blockIdx.x * blockDim.x + threadIdx.x;
-    int nbRow = size_of_ell/cut_off;
+    int nbRow = inputMatrix.ell_size/inputMatrix.cut_off;
     //ELL multiplication with scalar
     if (idx < nbRow){
         for (int element = 0; element < cut_off ; element++){
-            ell_data[element] = ell_data[element] * scalar;
+            inputMatrix.ell_data[element] = inputMatrix.ell_data[element] * scalar;
         }
 
     }
     //COO multiplication with scalar
     for (int element = idx ; element < size_of_coo; element += blockDim.x * gridDim.x){
-        coo_data[element]  = coo_data[element] * scalar;
+        inputMatrix.coo_data[element]  = inputMatrix.coo_data[element] * scalar;
     }
+
+    return inputMatrix;
     
 }
 
@@ -71,24 +74,25 @@ __global__ void HYB_multiplication_scalar(float * ell_data ,int size_of_ell,floa
 
     Output : Return the first matrix with the addition performed with the second one 
     ***/
-__global__ void HYB_addition(float * ell_data , int * ell_col_ids,int size_of_ell,int cut_off ,float * coo_data,int * col_ids, int size_of_coo , float *inELL, float * inCOO  ){
+__global__ Hyb HYB_addition(Hyb inputMatrix, Hyb inMatrix ){
     int idx = blockIdx.x * blockDim.x + threadIdx.x;
-    int nbRow = size_of_ell/cut_off;
+    int nbRow = inputMatrix.ell_size/inputMatrix.cut_off;
     //ELL addition
     if (idx < nbRow){
         int row = idx ;
         for (int element = 0; element < cut_off ; element++){ //elements_in_rows
             int element_offset = row + element * nbRow;
-            ell_data[element_offset]= ell_data[element_offset] + inELL[ell_col_ids[element_offset]];
+            inputMatrix.ell_data[element_offset]= inputMatrix.ell_data[element_offset] + inMatrix.ell_data[inputMatrix.ell_col[element_offset]];
 
         }
     }
     //COO addition
     for (int element = idx ; element < size_of_coo; element += blockDim.x * gridDim.x){
-        coo_data[element] = coo_data[element] + inCOO[col_ids[element]];
+        inputMatrix.coo_data[element] = inputMatrix.coo_data[element] + inMatrix.coo_data[inputMatrix.coo_col[element]];
     }
     
-}t
+    return inputMatrix;
+}
 
 /*** Input : 
 
@@ -220,7 +224,7 @@ int size_of_new_coo(int * rows, int COO_size , int cut_off){
         if (count > cut_off){
             size++;
         }
-        
+
     }
     return size;
 }
