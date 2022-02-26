@@ -173,7 +173,7 @@ int **getCombinaison(int start ,int end , int length , int dimension){
 
     Output : Return a matrix on Hybrid format 
 ***/
-__global__ void getMatrixFromCombinaison(int start ,int end , int length , int dimension, HYB * SupraMatrix, int * combinaison  ){
+__global__ void getMatrixFromCombinaison( int pathLength , int dimension, HYB * supraMatrix, int * combinaison  ){
 
     
 
