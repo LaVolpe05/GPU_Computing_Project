@@ -182,6 +182,8 @@ __global__ Hyb getMatrixFromCombinaison( int pathLength , int dimension, HYB * s
     int sizeSupraMatrix = dimension*dimension;
     int sizeCombination = pow(dimension,(pathLength -1));
     int cut_off;
+
+    /*** For the multiplication ***/
     Hyb newMatrix ;
     newMatrix.cut_off = supraMatrix[0].cut_off;
     newMatrix.ell_data = supraMatrix[0].ell_data;
@@ -192,14 +194,29 @@ __global__ Hyb getMatrixFromCombinaison( int pathLength , int dimension, HYB * s
     newMatrix.coo_row = supraMatrix[0].coo_row;
     newMatrix.coo_size = supraMatrix[0].coo_size;
 
+
+    /*** For the addition***/
+    Hyb matrix ;
+    Matrix.cut_off = supraMatrix[0].cut_off;;
+    Matrix.ell_data = 0;
+    Matrix.ell_col = 0;
+    Matrix.ell_size = 0;
+    Matrix.coo_data = 0;
+    Matrix.coo_col = 0;
+    Matrix.coo_row = 0;
+    Matrix.coo_size = supraMatrix[0].coo_size;
+
     
     for(int i = 0 ; i < sizeCombination ; i +=pathLength){
         
 
         for (int j = 0 ; j < pathLength ; j++){
-            HYB_multiplication(&ell_data ,&ell_col_ids,size_of_ell,cut_off ,&coo_data,&col_ids,&rows_ids,size_of_coo ,&inELL,&inCOO ,&outEll ,&outCoo );
+            if(i*j+j != 0){
+                newMatrix = HYB_multiplication(newMatrix,supraMatrix[(i*j)+j]);
+            }
+            
         }
-        HYB_addition(&ell_data ,&ell_col_ids,size_of_ell, cut_off ,&coo_data,&col_ids,size_of_coo ,&inELL,&inCOO );
+        Matrix = HYB_addition( Matrix,newMatrix );// à modifier 
     }
     
 
