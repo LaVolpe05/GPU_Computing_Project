@@ -175,6 +175,25 @@ int **getCombinaison(int start ,int end , int length , int dimension){
 ***/
 __global__ void getMatrixFromCombinaison( int pathLength , int dimension, HYB * supraMatrix, int * combinaison  ){
 
+    int sizeSupraMatrix = dimension*dimension;
+    int sizeCombination = pow(dimension,(pathLength -1));
+    int cut_off;
+    float * ell_data;
+    int * ell_col;
+    int ell_size;
+    float * coo_data;
+    int * coo_col;
+    int * coo_row;
+    int coo_size;
+    
+    for(int i = 0 ; i < sizeCombination ; i +=pathLength){
+        
+
+        for (int j = 0 ; j < pathLength ; j++){
+            HYB_multiplication(&ell_data ,&ell_col_ids,size_of_ell,cut_off ,&coo_data,&col_ids,&rows_ids,size_of_coo ,&inELL,&inCOO ,&outEll ,&outCoo );
+        }
+        HYB_addition(&ell_data ,&ell_col_ids,size_of_ell, cut_off ,&coo_data,&col_ids,size_of_coo ,&inELL,&inCOO );
+    }
     
 
 
