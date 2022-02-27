@@ -17,6 +17,26 @@ typedef struct{
 }Hyb;
 
 
+
+/*** Input : An hybrid matrix 
+
+    Output : The same matrix initialized to zero
+***/
+
+Hyb hybrid_initializing(Hyb matrix){
+    matrix.cut_off;
+    matrix.ell_data = NULL;
+    matrix.ell_col = NULL;
+    matrix.ell_size = 0;
+    matrix.coo_data = NULL;
+    matrix.coo_col =NULL;
+    matrix.coo_row = NULL;
+    matrix.coo_size = 0;
+
+
+    return matrix;
+}
+
 /*** Input : Two matrices on Hybrid format 
 
     Output : Return 2 array ; one is the ELL values of the multiplication and the other one is the COO values of the multiplication 
@@ -198,14 +218,7 @@ int **getCombinaison(int start ,int end , int length , int dimension){
 
     /*** For the addition***/
     Hyb Matrix ;
-    Matrix.cut_off = 0;
-    Matrix.ell_data = NULL;
-    Matrix.ell_col = NULL;
-    Matrix.ell_size = 0;
-    Matrix.coo_data = NULL;
-    Matrix.coo_col = NULL;
-    Matrix.coo_row = NULL;
-    Matrix.coo_size = 0;
+    
 
     
     for(int i = 0 ; i < sizeCombination ; i +=pathLength){
@@ -387,7 +400,7 @@ Hyb Katz_Similarity(int theta ,int pathLength,int dimension,int start,int end, H
 
         
     }
-    
+
 
     return matrix;
 
