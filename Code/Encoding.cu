@@ -127,11 +127,11 @@ int **getCombinaison(int start ,int end , int length , int dimension){
     for (int i = 0; i < dimension*dimension*size; i++){
         new_arr[i] = 0;
     }
-    //printf("here");
+
     for (int i = 0; i < size; i++){
         indices[i] = 0;
     }
-    //printf("here");
+
     while (1) {
     
         // print current combination
@@ -146,9 +146,7 @@ int **getCombinaison(int start ,int end , int length , int dimension){
                     printf("%d ",arr[i][indices[i]]*10+(end));
                 }
             }
-            
-            //new_arr[i] = arr[i][indices[i]];
-            //printf("%d ",new_arr[i]);
+
             
         }
         printf("\n");
@@ -340,7 +338,7 @@ Hyb cooToHyb(int* values,int * columns, int * rows ,int COO_size , int nbCol , i
       }
     
   }
-  printf("Actualise ! \n");
+  //printf("Actualise ! \n");
   /**ELL_Values = temp_ELL_values;
   *ELL_Indexes = temp_ELL_indexes;
   *COO_Values = temp_COO_values;
