@@ -198,12 +198,12 @@ __global__ Hyb getMatrixFromCombinaison( int pathLength , int dimension, HYB * s
     /*** For the addition***/
     Hyb matrix ;
     Matrix.cut_off = supraMatrix[0].cut_off;;
-    Matrix.ell_data = 0;
-    Matrix.ell_col = 0;
-    Matrix.ell_size = 0;
-    Matrix.coo_data = 0;
-    Matrix.coo_col = 0;
-    Matrix.coo_row = 0;
+    Matrix.ell_data = NULL;
+    Matrix.ell_col = NULL;
+    Matrix.ell_size = supraMatrix[0].ell_size;
+    Matrix.coo_data = NULL;
+    Matrix.coo_col = NULL;
+    Matrix.coo_row = NULL;
     Matrix.coo_size = supraMatrix[0].coo_size;
 
     
@@ -216,8 +216,18 @@ __global__ Hyb getMatrixFromCombinaison( int pathLength , int dimension, HYB * s
             }
             
         }
-        Matrix = HYB_addition( Matrix,newMatrix );// à modifier 
+        if(i*j+j == 0){
+            Matrix = newMatrix;
+
+        }else{
+
+            Matrix = HYB_addition( Matrix,newMatrix );
+
+        }
+        
     }
+
+    return Matrix;
     
 
 
@@ -324,6 +334,7 @@ int cooToHyb(int* values,int * columns, int * rows ,int COO_size , int nbCol , i
   *COO_Col = temp_COO_col;
   *COO_Row = temp_COO_row;
   return index_ELL;
+  
 }
 
 void Katz_Similarity(int theta ,int pathLength,int dimension,int start,int end, HYB * supraMatrix){
