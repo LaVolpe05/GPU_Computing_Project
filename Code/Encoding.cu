@@ -368,24 +368,7 @@ Hyb Katz_Similarity(int theta ,int pathLength,int dimension,int start,int end, H
     int * combination = getCombinaison(start ,end , pathLength ,dimension);
 
     Hyb matrix;
-    matrix.cut_off = 0;
-    matrix.ell_data = NULL;
-    matrix.ell_col = NULL;
-    matrix.ell_size = 0;
-    matrix.coo_data = NULL;
-    matrix.coo_col = NULL;
-    matrix.coo_row = NULL;
-    matrix.coo_size = 0;
     Hyb newMatrix;
-
-    newMatrix.cut_off = 0;
-    newMatrix.ell_data = NULL;
-    newMatrix.ell_col = NULL;
-    newMatrix.ell_size = 0;
-    newMatrix.coo_data = NULL;
-    newMatrix.coo_col = NULL;
-    newMatrix.coo_row = NULL;
-    newMatrix.coo_size = 0;
     
     for(int k = 0 ; k < pathLength ; k++){
 
