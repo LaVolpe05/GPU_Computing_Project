@@ -177,8 +177,9 @@ int **getCombinaison(int start ,int end , int length , int dimension){
 
     Output : Return a matrix on Hybrid format 
 ***/
-__global__ Hyb getMatrixFromCombinaison( int pathLength , int dimension, HYB * supraMatrix, int * combinaison  ){
-
+ Hyb getMatrixFromCombinaison( int pathLength , int dimension, HYB * supraMatrix, int * combinaison  ){
+    dim3 dimBlock( RowA/cut_off, RowA/cut_off);
+	dim3 dimGrid( 1, 1 );
     int sizeSupraMatrix = dimension*dimension;
     int sizeCombination = pow(dimension,(pathLength -1));
     int cut_off;
@@ -196,15 +197,15 @@ __global__ Hyb getMatrixFromCombinaison( int pathLength , int dimension, HYB * s
 
 
     /*** For the addition***/
-    Hyb matrix ;
-    Matrix.cut_off = supraMatrix[0].cut_off;;
+    Hyb Matrix ;
+    Matrix.cut_off = 0;
     Matrix.ell_data = NULL;
     Matrix.ell_col = NULL;
-    Matrix.ell_size = supraMatrix[0].ell_size;
+    Matrix.ell_size = 0;
     Matrix.coo_data = NULL;
     Matrix.coo_col = NULL;
     Matrix.coo_row = NULL;
-    Matrix.coo_size = supraMatrix[0].coo_size;
+    Matrix.coo_size = 0;
 
     
     for(int i = 0 ; i < sizeCombination ; i +=pathLength){
@@ -212,7 +213,7 @@ __global__ Hyb getMatrixFromCombinaison( int pathLength , int dimension, HYB * s
 
         for (int j = 0 ; j < pathLength ; j++){
             if(i*j+j != 0){
-                newMatrix = HYB_multiplication(newMatrix,supraMatrix[(i*j)+j]);
+                newMatrix = HYB_multiplication<<<dimGrid,dimBlock>>>(newMatrix,supraMatrix[(i*j)+j]);
             }
             
         }
@@ -221,15 +222,14 @@ __global__ Hyb getMatrixFromCombinaison( int pathLength , int dimension, HYB * s
 
         }else{
 
-            Matrix = HYB_addition( Matrix,newMatrix );
+            Matrix = HYB_addition<<<dimGrid,dimBlock>>>( Matrix,newMatrix );
 
         }
         
     }
 
-    return Matrix;
-    
 
+    return Matrix;
 
 }
 
@@ -265,7 +265,7 @@ int size_of_new_coo(int * rows, int COO_size , int cut_off){
     Output : An Hybrid structure composed of (Ell : values and columns ; COO :values , columns , rows)
 ***/
 
-int cooToHyb(int* values,int * columns, int * rows ,int COO_size , int nbCol , int nbRow,int cut_off,int ** ELL_Values, int ** ELL_Indexes,int ** COO_Values, int ** COO_Col , int ** COO_Row){
+Hyb cooToHyb(int* values,int * columns, int * rows ,int COO_size , int nbCol , int nbRow,int cut_off){
   int size_of_coo = size_of_new_coo(rows,COO_size,cut_off);
   int size_of_ell = nbRow*cut_off;
   int temp_COO_values[size_of_coo];
@@ -328,31 +328,68 @@ int cooToHyb(int* values,int * columns, int * rows ,int COO_size , int nbCol , i
     
   }
   printf("Actualise ! \n");
-  *ELL_Values = temp_ELL_values;
+  /**ELL_Values = temp_ELL_values;
   *ELL_Indexes = temp_ELL_indexes;
   *COO_Values = temp_COO_values;
   *COO_Col = temp_COO_col;
   *COO_Row = temp_COO_row;
-  return index_ELL;
+  return index_ELL;*/
+  Hyb matrix ;
+  Matrix.cut_off = cut_off;;
+  Matrix.ell_data = temp_ELL_values;
+  Matrix.ell_col = temp_ELL_indexes;
+  Matrix.ell_size = size_of_ell;
+  Matrix.coo_data = temp_COO_values;
+  Matrix.coo_col = temp_COO_col;
+  Matrix.coo_row = temp_COO_row;
+  Matrix.coo_size = size_of_coo;
+
+  return matrix;
   
 }
 
-void Katz_Similarity(int theta ,int pathLength,int dimension,int start,int end, HYB * supraMatrix){
-    int * temp_COO_values;
-    int * temp_COO_row;
-    int * temp_COO_col;
-    int * temp_ELL_values;
-    int * temp_ELL_indexes;
+Hyb Katz_Similarity(int theta ,int pathLength,int dimension,int start,int end, Hyb * supraMatrix){
+    
     dim3 dimBlock( RowA/cut_off, RowA/cut_off);
 	dim3 dimGrid( 1, 1 );
     int * combination = getCombinaison(start ,end , pathLength ,dimension);
+
+    Hyb matrix;
+    matrix.cut_off = 0;
+    matrix.ell_data = NULL;
+    matrix.ell_col = NULL;
+    matrix.ell_size = 0;
+    matrix.coo_data = NULL;
+    matrix.coo_col = NULL;
+    matrix.coo_row = NULL;
+    matrix.coo_size = 0;
+    Hyb newMatrix;
+
+    newMatrix.cut_off = 0;
+    newMatrix.ell_data = NULL;
+    newMatrix.ell_col = NULL;
+    newMatrix.ell_size = 0;
+    newMatrix.coo_data = NULL;
+    newMatrix.coo_col = NULL;
+    newMatrix.coo_row = NULL;
+    newMatrix.coo_size = 0;
     
     for(int k = 0 ; k < pathLength ; k++){
 
-        temp = matrixFactorMultiplication(pow(theta,k),getMatrixFromCombinaison(start,end,k,dimension,supraAdjacency,combination));
+        newMatrix = matrixFactorMultiplication<<<dimGrid,dimBlock>>>(pow(theta,k),getMatrixFromCombinaison(start,end,k,dimension,supraMatrix,combination));
+        if(k == 0){
 
-        HYB_addition<<<dimGrid,dimBlock>>>(temp_COO_values,temp_COO_row,temp_COO_col,temp_ELL_values,temp_ELL_indexes,temp);
+            matrix = newMatrix;
+        }else{
+
+            matrix = HYB_addition<<<dimGrid,dimBlock>>>(matrix,newMatrix);
+        }
+
+        
     }
+    
+
+    return matrix;
 
 }
 
